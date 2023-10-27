@@ -14,7 +14,6 @@ app.config([
                 templateUrl: "views/list.html",
                 controller: "list",
             })
-            // else 404
             .otherwise({
                 redirectTo: "/login",
             });
@@ -32,20 +31,30 @@ app.controller("login", function ($scope, $location) {
 app.controller("list", function ($scope, ApiService) {
     $scope.books = [];
     $scope.searchTerm = '';
+    $scope.page = 1;
 
     $scope.search = () => {
-        $scope.books = ApiService.getSpoofBooks($scope.searchTerm);
+        $scope.books = ApiService.getSpoofBooks($scope.searchTerm, $scope.page);
     }
 
-    ApiService.getBooks();
+    $scope.previous = () => {
+        if($scope.page > 1) {
+            $scope.page--;
+        }
+        $scope.search();
+    }
+
+    $scope.next = () => {
+        $scope.page++;
+        $scope.search();
+    }
 });
 
 
 app.factory('ApiService', function ($http) {
     var service = {};
-    var index = 0;
 
-    service.getBooks = (searchTerm) => {
+    service.getBooks = (searchTerm, index) => {
 
         var config = {
             headers: {
@@ -63,7 +72,7 @@ app.factory('ApiService', function ($http) {
                 return data;
             }
         ).catch(function (error) {
-            console.log('sadf', error)
+            console.log('error', error)
         });
     }
 
