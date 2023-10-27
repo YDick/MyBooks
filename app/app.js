@@ -36,6 +36,8 @@ app.controller("list", function ($scope, ApiService) {
     $scope.search = () => {
         $scope.books = ApiService.getSpoofBooks($scope.searchTerm);
     }
+
+    ApiService.getBooks();
 });
 
 
